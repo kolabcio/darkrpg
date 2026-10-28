@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Frakcje</title>
+<style>
+body{margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;background:#1e1e1e;color:#e6e6e6}
+h1{font-size:22px;color:#d49822;margin:0 0 20px}
+ul{list-style:none;padding:0;margin:0;max-width:720px}
+li{margin:0 0 10px}
+a{display:block;padding:12px 16px;background:#2a2a2a;border-left:4px solid #d49822;color:#e6e6e6;text-decoration:none;border-radius:4px}
+a:hover{background:#353535}
+</style>
+</head>
+<body>
+<h1>Frakcje</h1>
+<ul>
+<li><a href="sapd.html" data-key="sapd">SAPD</a></li>
+<li><a href="safd.html" data-key="safd">SAFD</a></li>
+<li><a href="samd.html" data-key="samd">SAMD</a></li>
+<li><a href="sara.html" data-key="sara">SARA</a></li>
+</ul>
+<script>
+const H = {
+sapd: "c3c5f01f45546bb847fa36e076cdcdb9db2558f7b3c4680b970290af7ea3c775",
+safd: "ca334200e3ade6a22b10926f9111151a835438fd9f6cec7e893f19d9af9303f2",
+samd: "82381799900763c275bd11470544fab728be6962e4e983483ce133f02b32bf47",
+sara: "c4c979399f3fa2590b781090bd10e9523b09dce87d0c3a6e23701fb2abe7d0b8"
+};
+async function sha(t){
+const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function ask(key){
+alert('podaj hasło');
+const p = prompt('Hasło:');
+if (p === null) return false;
+return (await sha(p)) === H[key];
+}
+document.querySelectorAll('a[data-key]').forEach(a => {
+a.addEventListener('click', async e => {
+e.preventDefault();
+const href = a.getAttribute('href');
+if (await ask(a.dataset.key)) {
+location.href = href;
+} else {
+alert('Złe hasło');
+}
+});
+});
+</script>
+</body>
+</html>

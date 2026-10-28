@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Panel</title>
+<style>
+body{margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;background:#1e1e1e;color:#e6e6e6}
+h1{font-size:22px;color:#d49822;margin:0 0 20px}
+ul{list-style:none;padding:0;margin:0;max-width:720px}
+li{margin:0 0 10px}
+a{display:block;padding:12px 16px;background:#2a2a2a;border-left:4px solid #d49822;color:#e6e6e6;text-decoration:none;border-radius:4px}
+a:hover{background:#353535}
+</style>
+</head>
+<body style="visibility:hidden">
+<h1>Panel</h1>
+<ul>
+<li><a href="frakcje/frakcje.html" data-key="frakcje">FRAKCJE</a></li>
+<li><a href="biznesy/biznesy.html" data-key="biznesy">BIZNESY</a></li>
+<li><a href="organizacje/organizacje.html" data-key="organizacje">ORGANIZACJE</a></li>
+<li><a href="administracja/administracja.html" data-key="administracja">ADMINISTRACJA</a></li>
+</ul>
+<script>
+const H = {
+idx: "c862fd6fcfa09e5f5c3b7fff9c77b7855f2f828f103e67a8ec62b1639508d6ef",
+frakcje: "676f6688b945635cb41153b2dd3f5661c878e37d3ae41b571684e0dc6fdbe5f9",
+biznesy: "c437937dce8f466f7f5adb159164251523ee23ec3e30812aad3924425ce58e83",
+organizacje: "2643a7daf8f14d4d9b2ba0eb18e5c4c32bb2d9083bb89b83595b7eb5e9811799",
+administracja: "c8b2e5a61b22a509ce85286e40a13a69f5fc8dce0fa9891566eb11bdf305ee81"
+};
+async function sha(t){
+const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function ask(key){
+alert('podaj hasło');
+const p = prompt('Hasło:');
+if (p === null) return false;
+return (await sha(p)) === H[key];
+}
+(async () => {
+if (await ask('idx')) {
+document.body.style.visibility = 'visible';
+} else {
+document.body.innerHTML = '';
+}
+})();
+document.querySelectorAll('a[data-key]').forEach(a => {
+a.addEventListener('click', async e => {
+e.preventDefault();
+const href = a.getAttribute('href');
+if (await ask(a.dataset.key)) {
+location.href = href;
+} else {
+alert('Złe hasło');
+}
+});
+});
+</script>
+</body>
+</html>
